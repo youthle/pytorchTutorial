@@ -30,7 +30,7 @@ output_size = n_features
 # we can call this model with samples X
 model = nn.Linear(input_size, output_size)
 
-'''
+'''  #以下是以自定义的形式实现上述model
 class LinearRegression(nn.Module):
     def __init__(self, input_dim, output_dim):
         super(LinearRegression, self).__init__()
