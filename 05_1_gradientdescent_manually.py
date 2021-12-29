@@ -13,7 +13,7 @@ w = 0.0
 
 # model output
 def forward(x):
-    return w * x
+    return w * x  # notice this x can be a vector
 
 # loss = MSE
 def loss(y, y_pred):
