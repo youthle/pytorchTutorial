@@ -13,9 +13,9 @@ n_samples, n_features = X.shape
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1234)
 
-# scale
+# scale, to make each feature to have 0 mean 
 sc = StandardScaler()
-X_train = sc.fit_transform(X_train)
+X_train = sc.fit_transform(X_train) #注意对这两拨数据的不同处理
 X_test = sc.transform(X_test)
 
 X_train = torch.from_numpy(X_train.astype(np.float32))
@@ -23,8 +23,10 @@ X_test = torch.from_numpy(X_test.astype(np.float32))
 y_train = torch.from_numpy(y_train.astype(np.float32))
 y_test = torch.from_numpy(y_test.astype(np.float32))
 
-y_train = y_train.view(y_train.shape[0], 1)
+
+y_train = y_train.view(y_train.shape[0], 1) #把原本的行向量转为列向量
 y_test = y_test.view(y_test.shape[0], 1)
+
 
 # 1) Model
 # Linear model f = wx + b , sigmoid at the end
@@ -40,9 +42,9 @@ class Model(nn.Module):
 model = Model(n_features)
 
 # 2) Loss and optimizer
-num_epochs = 100
+num_epochs = 1000
 learning_rate = 0.01
-criterion = nn.BCELoss()
+criterion = nn.BCELoss() # 注意loss function 与linear regression的不同了
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 # 3) Training loop
@@ -58,12 +60,12 @@ for epoch in range(num_epochs):
     # zero grad before new step
     optimizer.zero_grad()
 
-    if (epoch+1) % 10 == 0:
+    if (epoch+1) % 100 == 0:
         print(f'epoch: {epoch+1}, loss = {loss.item():.4f}')
 
 
-with torch.no_grad():
+with torch.no_grad():  # evaluation should not get grad track from the computational graph
     y_predicted = model(X_test)
-    y_predicted_cls = y_predicted.round()
+    y_predicted_cls = y_predicted.round() # 把sigmoid函数输出的浮点数转化为 0，1
     acc = y_predicted_cls.eq(y_test).sum() / float(y_test.shape[0])
     print(f'accuracy: {acc.item():.4f}')
