@@ -31,7 +31,7 @@ class WineDataset(Dataset):
     def __init__(self):
         # Initialize data, download, etc.
         # read with numpy or pandas
-        xy = np.loadtxt('./data/wine/wine.csv', delimiter=',', dtype=np.float32, skiprows=1)
+        xy = np.loadtxt('wine.csv', delimiter=',', dtype=np.float32, skiprows=1)
         self.n_samples = xy.shape[0]
 
         # here the first column is the class label, the rest are the features
@@ -58,15 +58,15 @@ print(features, labels)
 # Load whole dataset with DataLoader
 # shuffle: shuffle data, good for training
 # num_workers: faster loading with multiple subprocesses
-# !!! IF YOU GET AN ERROR DURING LOADING, SET num_workers TO 0 !!!
+# !!! IF YOU GET AN ERROR DURING LOADING, SET num_workers TO 0 !!!   # Super important comment!
 train_loader = DataLoader(dataset=dataset,
                           batch_size=4,
                           shuffle=True,
-                          num_workers=2)
+                          num_workers=0)
 
 # convert to an iterator and look at one random sample
 dataiter = iter(train_loader)
-data = dataiter.next()
+data = dataiter.next()  # get the next item (batch size of 4) of the dataiter
 features, labels = data
 print(features, labels)
 
@@ -76,7 +76,7 @@ total_samples = len(dataset)
 n_iterations = math.ceil(total_samples/4)
 print(total_samples, n_iterations)
 for epoch in range(num_epochs):
-    for i, (inputs, labels) in enumerate(train_loader):
+    for i, (inputs, labels) in enumerate(train_loader):  # enumerate()-> loop with counters
         
         # here: 178 samples, batch_size = 4, n_iters=178/4=44.5 -> 45 iterations
         # Run your training process
@@ -84,6 +84,7 @@ for epoch in range(num_epochs):
             print(f'Epoch: {epoch+1}/{num_epochs}, Step {i+1}/{n_iterations}| Inputs {inputs.shape} | Labels {labels.shape}')
 
 # some famous datasets are available in torchvision.datasets
+# torchvision.datasets.MNIST()
 # e.g. MNIST, Fashion-MNIST, CIFAR10, COCO
 
 train_dataset = torchvision.datasets.MNIST(root='./data', 
@@ -92,7 +93,7 @@ train_dataset = torchvision.datasets.MNIST(root='./data',
                                            download=True)
 
 train_loader = DataLoader(dataset=train_dataset, 
-                                           batch_size=3, 
+                                           batch_size=8, 
                                            shuffle=True)
 
 # look at one random sample
