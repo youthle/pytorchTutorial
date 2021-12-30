@@ -38,7 +38,7 @@ for epoch in range(num_epochs):
     
     # Backward pass and update
     loss.backward()
-    optimizer.step()
+    optimizer.step()  # update weight
 
     # zero grad before new step
     optimizer.zero_grad()
@@ -47,7 +47,7 @@ for epoch in range(num_epochs):
         print(f'epoch: {epoch+1}, loss = {loss.item():.4f}')
 
 # Plot
-predicted = model(X).detach().numpy()
+predicted = model(X).detach().numpy() # prevent the gradient to be tracked in computing graph
 
 plt.plot(X_numpy, y_numpy, 'ro')
 plt.plot(X_numpy, predicted, 'b')
