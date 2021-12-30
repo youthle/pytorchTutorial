@@ -43,7 +43,7 @@ import numpy as np
 class WineDataset(Dataset):
 
     def __init__(self, transform=None):
-        xy = np.loadtxt('./data/wine/wine.csv', delimiter=',', dtype=np.float32, skiprows=1)
+        xy = np.loadtxt('wine.csv', delimiter=',', dtype=np.float32, skiprows=1)
         self.n_samples = xy.shape[0]
 
         # note that we do not convert to tensor here
@@ -89,15 +89,15 @@ print(type(features), type(labels))
 print(features, labels)
 
 print('\nWith Tensor Transform')
-dataset = WineDataset(transform=ToTensor())
+dataset = WineDataset(transform=ToTensor())  # apply a single transformer
 first_data = dataset[0]
 features, labels = first_data
 print(type(features), type(labels))
 print(features, labels)
 
 print('\nWith Tensor and Multiplication Transform')
-composed = torchvision.transforms.Compose([ToTensor(), MulTransform(4)])
-dataset = WineDataset(transform=composed)
+composed = torchvision.transforms.Compose([ToTensor(), MulTransform(4)])  # define multiple transformers
+dataset = WineDataset(transform=composed)  # apply multiple transformers
 first_data = dataset[0]
 features, labels = first_data
 print(type(features), type(labels))
