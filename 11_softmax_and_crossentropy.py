@@ -49,7 +49,7 @@ print(f'Loss1 numpy: {l1:.4f}')
 print(f'Loss2 numpy: {l2:.4f}')
 
 # CrossEntropyLoss in PyTorch (applies Softmax)
-# nn.LogSoftmax + nn.NLLLoss
+# nn.LogSoftmax + nn.NLLLoss  #注意已经是两个功能集合了
 # NLLLoss = negative log likelihood loss
 loss = nn.CrossEntropyLoss()
 # loss(input, target)
@@ -78,7 +78,7 @@ print(f'Actual class: {Y.item()}, Y_pred1: {predictions1.item()}, Y_pred2: {pred
 
 # target is of size nBatch = 3
 # each element has class label: 0, 1, or 2
-Y = torch.tensor([2, 0, 1])
+Y = torch.tensor([2, 0, 1])  # 注意这里是3个sample
 
 # input is of size nBatch x nClasses = 3 x 3
 # Y_pred are logits (not softmax)
@@ -119,7 +119,7 @@ class NeuralNet1(nn.Module):
         return y_pred
 
 model = NeuralNet1(input_size=28*28, hidden_size=5)
-criterion = nn.BCELoss()
+criterion = nn.BCELoss()  #注意loss function的不同
 
 # Multiclass problem
 class NeuralNet2(nn.Module):
@@ -138,5 +138,7 @@ class NeuralNet2(nn.Module):
 
 model = NeuralNet2(input_size=28*28, hidden_size=5, num_classes=3)
 criterion = nn.CrossEntropyLoss()  # (applies Softmax)
+
+
 
 
