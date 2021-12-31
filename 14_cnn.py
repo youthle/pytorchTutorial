@@ -53,25 +53,25 @@ imshow(torchvision.utils.make_grid(images))
 class ConvNet(nn.Module):
     def __init__(self):
         super(ConvNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.conv1 = nn.Conv2d(3, 6, 5)  #3 input channels, 6 output channels, 5 kernel size
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
+        self.fc1 = nn.Linear(16 * 5 * 5, 120) # 1st fully connected layer 
+        self.fc2 = nn.Linear(120, 84)  # 2nd
+        self.fc3 = nn.Linear(84, 10)   #final layer
 
     def forward(self, x):
         # -> n, 3, 32, 32
         x = self.pool(F.relu(self.conv1(x)))  # -> n, 6, 14, 14
-        x = self.pool(F.relu(self.conv2(x)))  # -> n, 16, 5, 5
+        x = self.pool(F.relu(self.conv2(x)))  # -> n, 16, 5, 5  # 要把这个3d数组压成1d，所以之后一行的input是16*5*5
         x = x.view(-1, 16 * 5 * 5)            # -> n, 400
         x = F.relu(self.fc1(x))               # -> n, 120
         x = F.relu(self.fc2(x))               # -> n, 84
-        x = self.fc3(x)                       # -> n, 10
+        x = self.fc3(x)                       # -> n, 10  #这里不要softmax因为我们的loss function
         return x
 
 
-model = ConvNet().to(device)
+model = ConvNet().to(device)  #这里不给参数是因为参数全是定义是hard code的
 
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
@@ -85,7 +85,7 @@ for epoch in range(num_epochs):
         labels = labels.to(device)
 
         # Forward pass
-        outputs = model(images)
+        outputs = model(images)  #这里给数据即可
         loss = criterion(outputs, labels)
 
         # Backward and optimize
@@ -127,4 +127,5 @@ with torch.no_grad():
     for i in range(10):
         acc = 100.0 * n_class_correct[i] / n_class_samples[i]
         print(f'Accuracy of {classes[i]}: {acc} %')
+
 
