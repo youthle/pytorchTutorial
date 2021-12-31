@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Hyper-parameters 
-input_size = 784 # 28x28
+input_size = 784 # 28 pixel x28 pixel
 hidden_size = 500 
 num_classes = 10
 num_epochs = 2
@@ -36,6 +36,8 @@ test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
 
 examples = iter(test_loader)
 example_data, example_targets = examples.next()
+print(examples.next)
+print(len(train_loader), len(test_loader))
 
 for i in range(6):
     plt.subplot(2,3,i+1)
@@ -56,6 +58,7 @@ class NeuralNet(nn.Module):
         out = self.relu(out)
         out = self.l2(out)
         # no activation and no softmax at the end
+        # because we are using CrossEntropyLoss() 
         return out
 
 model = NeuralNet(input_size, hidden_size, num_classes).to(device)
@@ -70,7 +73,7 @@ for epoch in range(num_epochs):
     for i, (images, labels) in enumerate(train_loader):  
         # origin shape: [100, 1, 28, 28]
         # resized: [100, 784]
-        images = images.reshape(-1, 28*28).to(device)
+        images = images.reshape(-1, 28*28).to(device)  #用-1的意思是在乘积不变的情况下用给定维度的数值推测这一维
         labels = labels.to(device)
         
         # Forward pass
@@ -90,12 +93,12 @@ for epoch in range(num_epochs):
 with torch.no_grad():
     n_correct = 0
     n_samples = 0
-    for images, labels in test_loader:
+    for images, labels in test_loader:  #这里的循环是循环各batch
         images = images.reshape(-1, 28*28).to(device)
         labels = labels.to(device)
         outputs = model(images)
-        # max returns (value ,index)
-        _, predicted = torch.max(outputs.data, 1)
+        # max returns (value ,index) 因为max函数返回两个值，我们不想要第一个所以下面用_,
+        _, predicted = torch.max(outputs.data, 1) #along the first dimension
         n_samples += labels.size(0)
         n_correct += (predicted == labels).sum().item()
 
