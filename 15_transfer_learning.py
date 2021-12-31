@@ -1,3 +1,5 @@
+#此代码的文件路径部分有问题
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -59,6 +61,8 @@ inputs, classes = next(iter(dataloaders['train']))
 out = torchvision.utils.make_grid(inputs)
 
 imshow(out, title=[class_names[x] for x in classes])
+
+# to use scheduler, 注意下面for循环的结构
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     since = time.time()
@@ -132,7 +136,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 # Load a pretrained model and reset final fully connected layer.
 
 model = models.resnet18(pretrained=True)
-num_ftrs = model.fc.in_features
+num_ftrs = model.fc.in_features  # number of the input features of the fully-connected layer of the pretrained model
 # Here the size of each output sample is set to 2.
 # Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).
 model.fc = nn.Linear(num_ftrs, 2)
@@ -153,7 +157,7 @@ optimizer = optim.SGD(model.parameters(), lr=0.001)
 #     validate(...)
 #     scheduler.step()
 
-step_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
+step_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1) # for every 7 echpos, multiply the lr by 0.1
 
 model = train_model(model, criterion, optimizer, step_lr_scheduler, num_epochs=25)
 
